@@ -1,0 +1,55 @@
+EMMAX beta as of Match 7, 2010
+ - Copyright © Hyun Min Kang. All rights reserved
+
+The current version of EMMAX release is beta version which support PLINK's transposed PED file. A complete version of the software will be appearing soon. 
+
+* Instructions
+
+1. Use PLINK to transpose your genotype files (bed or ped format) to tped/tfam format by running
+
+   % plink --bfile [bed_prefix] (or --file [ped_prefix]) --recode12 --output-missing-genotype 0 --transpose --out [tped_prefix]
+
+2. Reformat the phenotype files in the same order of .tfam files. The phenotype file has three entries at each line, FAMID, INDID, and phenotype values. Missing phenotype values should be represented as "NA". It is simpler to regress out the covariates when generating the phenotypes, but it is possible to simultaneously adjust for covariates.
+
+Sample lines of phenotype files.
+----
+59811	859811	0.609109817670387
+862311	862311	-0.0735227335684144
+864111	864111	-0.210247209814720
+865211	865211	-0.154258680369780
+875511	875511	0.239822160194388
+880111	880111	0.287436401143001
+880811	880811	NA
+881511	881511	0.114872064616424
+88211	88211	-0.0165529689285573
+----
+
+3. Create kinship matrix (IBS or BN) using emmax-kin. Make sure that both .tped and .tfam file exist with the same prefix.
+
+   IBS matrix
+   % emmax-kin -v -h -s -d 10 [tped_prefix] (will generate [tped_prefix].hIBS.kinf)
+
+   BN matrix
+   % emmax-kin -v -h -d 10 [tped_prefix]  (will generate [tped_prefix].hBN.kinf)
+
+   This procedure will take more time than the previous version of emmax-kin.
+
+4. Run EMMAX with the phenotype, tped/tfam files, and the kinship files as follows.
+   % emmax -v -d 10 -t [tped_prefix] -p [pheno_file] -k [kin_file] -o [out_prefix]
+   This will generate the following files:
+   - [out_prefix].reml : REML output. The last line denotes the pseudo-heritability estimates
+   - [out_prefix].ps : Each line consist of [SNP ID], [beta], [p-value].
+
+   If one wants to adjust for covariates simultanenously, add -c [cov_file] options to the above run, with the covariate file similar to the phenotype files, but allowing multiple columns ( > 3 ). Note that the intercept has to be included, meaning that the third column is recommended to be 1 always, and the covariates needs to be included from the fourth column. The order of the individual IDs should conform to the .tfam files, similar to the phenotype files. 
+
+-----------------
+Sample lines of covariate files
+-----------------
+100211 100211 1 2
+100611 100611 1 2
+100711 100711 1 3
+100811 100811 1 4
+101611 101611 1 2
+101711 101711 1 2
+
+5. Please email to hmkang@umich.edu for any further questions. Enjoy!

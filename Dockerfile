@@ -25,28 +25,13 @@ RUN git clone https://github.com/vcftools/vcftools.git \
     && make \
     && make install
 
-RUN wget https://github.com/EBIvariation/vcf-validator/releases/download/v0.9.1/vcf_validator_linux \
-    && chmod 755 vcf_validator_linux \
-    && mv vcf_validator_linux /kb/deployment/bin 
+RUN chmod 755 dep/vcf_validator_linux
     
-# RUN sudo apt-get -y install r-cran-ggplot2
+RUN sudo apt-get -y install r-cran-ggplot2
 # library for r, probably for graphics
-
-# RUN sudo apt-get -y install plink
-# maybe need this "sudo dpkg --configure -a" ? Could run into trouble with package configure.
-
-RUN curl -O http://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20181202.zip \
-    && unzip plink_linux_x86_64_20181202.zip \
-    && mv plink /kb/deployment/bin \
-    && mv prettify /kb/deployment/bin
 
 RUN pip install pandas
 # data analysis library, remove if not used
-
-RUN curl -O http://csg.sph.umich.edu//kang/emmax/download/emmax-beta-07Mar2010.tar.gz \
-    && tar -xzf emmax-beta-07Mar2010.tar.gz \
-    && mv /emmax-beta-07Mar2010/emmax /kb/deployment/bin \
-    && mv /emmax-beta-07Mar2010/emmax-kin /kb/deployment/bin
 
 # -----------------------------------------
 

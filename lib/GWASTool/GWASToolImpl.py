@@ -4,7 +4,6 @@ import logging
 import os
 
 from installed_clients.KBaseReportClient import KBaseReport
-# import external .py files here
 #END_HEADER
 
 
@@ -42,16 +41,16 @@ class GWASTool:
         pass
 
 
-    def run_GWASTool(self, ctx, params):
+    def plink_file_conversions(self, ctx, params):
         """
-        This example function accepts any number of parameters and returns results in a KBaseReport
-        :param params: instance of mapping from String to unspecified object
+        This method is for generating the files needed by EMMAX from PLINK
+        :param params: KBase Variations Object, .TSV file ???
         :returns: instance of type "ReportResults" -> structure: parameter
            "report_name" of String, parameter "report_ref" of String
         """
         # ctx is the context object
         # return variables are: output
-        #BEGIN run_GWASTool
+        #BEGIN plink_file_conversions
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': {'objects_created':[],
                                                 'text_message': params['parameter_1']},
@@ -60,7 +59,11 @@ class GWASTool:
             'report_name': report_info['name'],
             'report_ref': report_info['ref'],
         }
-        #END run_GWASTool
+
+
+
+# code goes here
+        #END plink_file_conversions
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
@@ -68,7 +71,6 @@ class GWASTool:
                              'output is not type dict as required.')
         # return the results
         return [output]
-
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",

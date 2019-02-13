@@ -25,7 +25,7 @@ RUN git clone https://github.com/vcftools/vcftools.git \
     && make \
     && make install
 
-RUN chmod 755 deps/vcf_validator_linux
+# taking this out for now RUN chmod 755 deps/vcf_validator_linux
     
 RUN sudo apt-get -y install r-cran-ggplot2
 # library for r, probably for graphics

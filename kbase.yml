@@ -2,7 +2,7 @@ module-name:
     GWASTool
 
 module-description:
-    A KBase module
+    A KBase module which performs GWAS analysis.
 
 service-language:
     python
@@ -11,5 +11,5 @@ module-version:
     0.0.1
 
 owners:
-    [ntrobinson]
+    [ntrobinson, rmr, pjtinker, pranjan77, hdhicks42, hgmyatt42, cvschneider]
 

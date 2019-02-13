@@ -25,13 +25,17 @@ RUN git clone https://github.com/vcftools/vcftools.git \
     && make \
     && make install
 
-RUN chmod 755 dep/vcf_validator_linux
+RUN chmod 755 deps/vcf_validator_linux
     
 RUN sudo apt-get -y install r-cran-ggplot2
 # library for r, probably for graphics
 
 RUN pip install pandas
 # data analysis library, remove if not used
+
+# ./plink --vcf test_with_chr.vcf --out output
+# ./plink --bfile output --recode12 --output-missing-genotype 0 --transpose --out output2
+
 
 # -----------------------------------------
 

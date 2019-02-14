@@ -11,6 +11,6 @@ module GWASTool {
     /*
         This example function accepts any number of parameters and returns results in a KBaseReport
     */
-    funcdef run_GWASTool(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
+    funcdef plink_file_conversions(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
 
 };

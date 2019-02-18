@@ -28,7 +28,7 @@ parameters :
         ui-name : |
             Variations Object
         short-hint : |
-            A previously imported Variations object, constructed from a VCF file.
+            A previously imported KBase Variations object, constructed from a VCF file.
     tsv_file_path :
         ui-name : |
             .TSV File Path

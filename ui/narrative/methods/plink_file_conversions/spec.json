@@ -11,7 +11,7 @@
     },
     "parameters": [ 
         {
-            "id": "parameter_1",
+            "id": "variations_ref",
             "optional": true,
             "advanced": false,
             "allow_multiple": false,
@@ -26,7 +26,7 @@
         "service-mapping": {
             "url": "",
             "name": "GWASTool",
-            "method": "run_GWASTool",
+            "method": "plink_file_conversions",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",
@@ -35,8 +35,8 @@
                     "narrative_system_variable": "workspace_id",
                     "target_property": "workspace_id"
                 },{
-                    "input_parameter": "parameter_1",
-                    "target_property": "parameter_1"
+                    "input_parameter": "variations_ref",
+                    "target_property": "variations_ref"
                 }
             ],
             "output_mapping": [

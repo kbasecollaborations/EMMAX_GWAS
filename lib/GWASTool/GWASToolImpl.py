@@ -53,7 +53,7 @@ class GWASTool:
         #BEGIN plink_file_conversions
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': {'objects_created':[],
-                                                'text_message': params['parameter_1']},
+                                                'text_message': params['variations_ref']},
                                                 'workspace_name': params['workspace_name']})
         output = {
             'report_name': report_info['name'],
@@ -61,8 +61,7 @@ class GWASTool:
         }
 
 
-
-# code goes here
+        # code goes here
         #END plink_file_conversions
 
         # At some point might do deeper type checking...

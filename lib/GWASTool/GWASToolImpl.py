@@ -6,6 +6,7 @@ import os
 from installed_clients.KBaseReportClient import KBaseReport
 #END_HEADER
 
+from GWASTool.VCFToVariation import VCFToVariation
 
 class GWASTool:
     '''
@@ -40,7 +41,6 @@ class GWASTool:
         #END_CONSTRUCTOR
         pass
 
-
     def plink_file_conversions(self, ctx, params):
         """
         This method is for generating the files needed by EMMAX from PLINK
@@ -70,6 +70,7 @@ class GWASTool:
                              'output is not type dict as required.')
         # return the results
         return [output]
+
     def save_variation_from_vcf(self, ctx, params):
         """
         Save a variation (and trait?) object to Kbase given a reference genome, object output name,

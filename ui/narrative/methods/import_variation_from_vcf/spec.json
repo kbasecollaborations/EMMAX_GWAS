@@ -61,7 +61,7 @@
     "behavior": {
         "service-mapping": {
             "url": "",
-            "name": "VariationUtil",
+            "name": "GWASTool",
             "method": "save_variation_from_vcf",
             "input_mapping": [
                 {

@@ -24,16 +24,11 @@ suggestions:
 # Configure the display and description of parameters
 #
 parameters :
-    variations_ref :
+    variation_object_name :
         ui-name : |
             Variations Object
         short-hint : |
             A previously imported KBase Variations object, constructed from a VCF file.
-    tsv_file_path :
-        ui-name : |
-            .TSV File Path
-        short-hint : |
-            The path of your .TSV input file.
 
 description : |
     <p>Given input of VCF file or KBase Variations object and genotype data, performs GWAS analysis.</p>

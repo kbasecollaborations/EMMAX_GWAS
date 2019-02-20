@@ -79,7 +79,7 @@ class AssociationUtils:
         self.local_assoc_results_file_prefix = 'emmax_assoc'
 
         assoc_args = ['emmax', '-v', '-d', '10', '-t', self.local_plink_tped, '-p', self.local_pheno_file, '-k', self.local_kinship_file , self.local_assoc_results_file_prefix]
-        assoc_cmd = ['emmax]
+        assoc_cmd = ['emmax']
 
         for arg in assoc_args:
             assoc_cmd.append(arg)

@@ -53,7 +53,7 @@ class GWASTool:
         #BEGIN plink_file_conversions
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': {'objects_created':[],
-                                                'text_message': params['variations_ref']},
+                                                'text_message': params['variation_object_name']},
                                                 'workspace_name': params['workspace_name']})
         output = {
             'report_name': report_info['name'],
@@ -66,7 +66,7 @@ class GWASTool:
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method run_GWASTool return value ' +
+            raise ValueError('Method plink_file_conversions return value ' +
                              'output is not type dict as required.')
         # return the results
         return [output]

@@ -3,11 +3,6 @@ A KBase module: GWASTool
 */
 
 module GWASTool {
-    /*
-		TODO:
-			take assembly ref as input
-			take care of metagenomic use case
-    */
 
     /* typedefs for input/output values */
 
@@ -127,13 +122,13 @@ module GWASTool {
 	    Given a reference to a variation object, and output name: return a Variant Call Format (VCF) file path and name.
     */
 
-    typedef structure {
-        string report_name;
-        string report_ref;
-    } ReportResults;
-
     funcdef get_variation_as_vcf(get_variation_input params)
 	    returns (get_variation_output file) authentication required;
+
+	typedef structure {
+            string report_name;
+            string report_ref;
+    	} ReportResults;
 
     funcdef plink_file_conversions(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
 

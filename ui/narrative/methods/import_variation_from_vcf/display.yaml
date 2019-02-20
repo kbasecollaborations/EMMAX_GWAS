@@ -1,10 +1,10 @@
 #
 # define display information
 #
-name: Variation Util
+name: Variation Importer
 
 tooltip: |
-    Import SNP variation data
+    Import SNP variation data from a VCF file.
 
 screenshots: []
 

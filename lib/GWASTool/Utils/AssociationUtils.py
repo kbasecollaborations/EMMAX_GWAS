@@ -59,7 +59,7 @@ class AssociationUtils:
         self.local_plink_bed = os.path.join(self.local_data_dir, self.local_plink_prefix+'.bed')
         self.local_plink_bam = os.path.join(self.local_data_dir, self.local_plink_prefix+'.bed')
         self.local_plink_fam = os.path.join(self.local_data_dir, self.local_plink_prefix+'.bed')
-	self.local_plink_tped = os.path.join(self.local_data_dir, self.local_plink_prefix+'.tped')
+        self.local_plink_tped = os.path.join(self.local_data_dir, self.local_plink_prefix+'.tped')
 
         if not os.path.exists(self.local_plink_bed) or not os.path.exists(self.local_plink_bam) or not os.path.exists(self.local_plink_fam):
             #print("----plink binary generated----")
@@ -96,4 +96,4 @@ class AssociationUtils:
         if not os.path.exists(self.local_assoc_results_file):
             exit("EMMAX results file does not exist: "+self.local_assoc_results_file)
 
-return self.local_assoc_results_file
+        return self.local_assoc_results_file

@@ -79,4 +79,4 @@ class GWASReportUtils:
             'description': 'Manhattan plot of GEMMA GWAS association tests'
         }
 
-return html_return
+        return html_return

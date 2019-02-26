@@ -4,9 +4,14 @@ import logging
 import os
 
 from installed_clients.KBaseReportClient import KBaseReport
+
+from GWASTool.VCFtoVariation import VCFToVariation
+from GWASTool.Utils.AssociationUtils import AssociationUtils
+from GWASTool.Utils.GWASReportUtils import GWASReportUtils
+from installed_clients.VariationUtilClient import VariationUtil
 #END_HEADER
 
-from GWASTool.VCFToVariation import VCFToVariation
+
 
 class GWASTool:
     '''
@@ -34,14 +39,16 @@ class GWASTool:
     # be found
     def __init__(self, config):
         #BEGIN_CONSTRUCTOR
-        self.callback_url = os.environ['SDK_CALLBACK_URL']
-        self.shared_folder = config['scratch']
+        self.config = config
+        self.config['SDK_CALLBACK_URL'] = os.environ['SDK_CALLBACK_URL']
+        self.config['KB_AUTH_TOKEN'] = os.environ['KB_AUTH_TOKEN']
+        self.config['test_data_dir'] = os.path.abspath('/kb/testdata')
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
         #END_CONSTRUCTOR
         pass
 
-    def plink_file_conversions(self, ctx, params):
+    def plink_file_conversions(self, params):
         """
         This method is for generating the files needed by EMMAX from PLINK
         :param params: KBase Variations Object, .TSV file ???
@@ -51,6 +58,36 @@ class GWASTool:
         # ctx is the context object
         # return variables are: output
         #BEGIN plink_file_conversions
+
+        """
+        if 'variation' not in params:
+            raise ValueError('Variation KBase reference not set.')
+        """
+
+        variations = VariationUtil(self.config['SDK_CALLBACK_URL'])
+        variation_info = variations.get_variation_as_vcf({
+            'variation_ref': params['variation_object_name'],
+            'filename': os.path.join(self.config['scratch'], 'test_with_chr.vcf')
+        })
+
+        association = AssociationUtils(self.config, variation_info['path'])
+
+        assoc_file = association.run_assoc_exp(params)
+
+        assoc_report = GWASReportUtils(self.config)
+
+        report_obj = assoc_report.mk_output(params, assoc_file)
+
+        report_client = KBaseReport(self.config['SDK_CALLBACK_URL'])
+        report = report_client.create_extended_report(report_obj)
+
+        output = {
+            'report_name': report['name'],
+            'report_ref': report['ref'],
+            'ws': params['workspace_name']
+        }
+
+        """
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': {'objects_created':[],
                                                 'text_message': params['variation_object_name']},
@@ -59,6 +96,7 @@ class GWASTool:
             'report_name': report_info['name'],
             'report_ref': report_info['ref'],
         }
+        """
 
 
         # code goes here

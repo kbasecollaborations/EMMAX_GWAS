@@ -63,5 +63,6 @@ class GWASToolTest(unittest.TestCase):
         #
         # Check returned data with
         # self.assertEqual(ret[...], ...) or other unittest methods
-        ret = self.serviceImpl.plink_file_conversions(self.ctx, {'workspace_name': 'ntrobinson:narrative_1549488913106',
-                                                                 'variation_object_name': '25487/2/1'})
+
+        result = self.serviceImpl.plink_file_conversions(self.ctx, {'workspace_name': 'ntrobinson:narrative_1550787997102',
+                                                                 'variation': '25487/2/1'})

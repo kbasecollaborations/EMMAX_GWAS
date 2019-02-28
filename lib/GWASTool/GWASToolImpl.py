@@ -43,6 +43,8 @@ class GWASTool:
         self.config['SDK_CALLBACK_URL'] = os.environ['SDK_CALLBACK_URL']
         self.config['KB_AUTH_TOKEN'] = os.environ['KB_AUTH_TOKEN']
         self.config['test_data_dir'] = os.path.abspath('/kb/testdata')
+        self.shared_folder = config['scratch']
+
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
         #END_CONSTRUCTOR
@@ -59,24 +61,22 @@ class GWASTool:
         # return variables are: output
         #BEGIN plink_file_conversions
 
-        if 'variation_object_name' not in params:
+        if 'variation' not in params:
             raise ValueError('Variation KBase reference not set.')
 
         variations = VariationUtil(self.config['SDK_CALLBACK_URL'])
         variation_info = variations.get_variation_as_vcf({
-            'variation_ref': params['variation_object_name'],
-            # 'filename': os.path.join(self.config['scratch'], 'variation.vcf')
-            'filename': 'variation.vcf'
+            'variation_ref': params['variation'],
+            'filename': os.path.join(self.config['scratch'], 'variation.vcf')
         })
 
+        """
         association = AssociationUtils(self.config, variation_info['path'])
 
         assoc_file = association.run_assoc_exp(params)
-
         assoc_report = GWASReportUtils(self.config)
 
         report_obj = assoc_report.mk_output(params, assoc_file)
-
         report_client = KBaseReport(self.config['SDK_CALLBACK_URL'])
         report = report_client.create_extended_report(report_obj)
 
@@ -94,6 +94,8 @@ class GWASTool:
             raise ValueError('Method plink_file_conversions return value ' +
                              'output is not type dict as required.')
         # return the results
+        """
+        output = {}
         return [output]
 
     def save_variation_from_vcf(self, ctx, params):

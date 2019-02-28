@@ -59,15 +59,14 @@ class GWASTool:
         # return variables are: output
         #BEGIN plink_file_conversions
 
-        """
-        if 'variation' not in params:
+        if 'variation_object_name' not in params:
             raise ValueError('Variation KBase reference not set.')
-        """
 
         variations = VariationUtil(self.config['SDK_CALLBACK_URL'])
         variation_info = variations.get_variation_as_vcf({
             'variation_ref': params['variation_object_name'],
-            'filename': os.path.join(self.config['scratch'], 'test_with_chr.vcf')
+            # 'filename': os.path.join(self.config['scratch'], 'variation.vcf')
+            'filename': 'variation.vcf'
         })
 
         association = AssociationUtils(self.config, variation_info['path'])
@@ -87,19 +86,7 @@ class GWASTool:
             'ws': params['workspace_name']
         }
 
-        """
-        report = KBaseReport(self.callback_url)
-        report_info = report.create({'report': {'objects_created':[],
-                                                'text_message': params['variation_object_name']},
-                                                'workspace_name': params['workspace_name']})
-        output = {
-            'report_name': report_info['name'],
-            'report_ref': report_info['ref'],
-        }
-        """
-
-
-        # code goes here
+        print(output)
         #END plink_file_conversions
 
         # At some point might do deeper type checking...

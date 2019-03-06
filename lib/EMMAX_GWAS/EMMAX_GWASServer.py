@@ -17,7 +17,7 @@ from jsonrpcbase import JSONRPCService, InvalidParamsError, KeywordError, \
 from jsonrpcbase import ServerError as JSONServerError
 
 from biokbase import log
-from GWASTool.authclient import KBaseAuth as _KBaseAuth
+from EMMAX_GWAS.authclient import KBaseAuth as _KBaseAuth
 
 try:
     from ConfigParser import ConfigParser
@@ -45,14 +45,14 @@ def get_config():
     retconfig = {}
     config = ConfigParser()
     config.read(get_config_file())
-    for nameval in config.items(get_service_name() or 'GWASTool'):
+    for nameval in config.items(get_service_name() or 'EMMAX_GWAS'):
         retconfig[nameval[0]] = nameval[1]
     return retconfig
 
 config = get_config()
 
-from GWASTool.GWASToolImpl import GWASTool  # noqa @IgnorePep8
-impl_GWASTool = GWASTool(config)
+from EMMAX_GWAS.EMMAX_GWASImpl import EMMAX_GWAS  # noqa @IgnorePep8
+impl_EMMAX_GWAS = EMMAX_GWAS(config)
 
 
 class JSONObjectEncoder(json.JSONEncoder):
@@ -327,7 +327,7 @@ class Application(object):
                                    context['method'], context['call_id'])
 
     def __init__(self):
-        submod = get_service_name() or 'GWASTool'
+        submod = get_service_name() or 'EMMAX_GWAS'
         self.userlog = log.log(
             submod, ip_address=True, authuser=True, module=True, method=True,
             call_id=True, changecallback=self.logcallback,
@@ -338,12 +338,12 @@ class Application(object):
         self.serverlog.set_log_level(6)
         self.rpc_service = JSONRPCServiceCustom()
         self.method_authentication = dict()
-        self.rpc_service.add(impl_GWASTool.run_GWASTool,
-                             name='GWASTool.run_GWASTool',
+        self.rpc_service.add(impl_EMMAX_GWAS.run_emmax_association,
+                             name='EMMAX_GWAS.run_emmax_association',
                              types=[dict])
-        self.method_authentication['GWASTool.run_GWASTool'] = 'required'  # noqa
-        self.rpc_service.add(impl_GWASTool.status,
-                             name='GWASTool.status',
+        self.method_authentication['EMMAX_GWAS.run_emmax_association'] = 'required'  # noqa
+        self.rpc_service.add(impl_EMMAX_GWAS.status,
+                             name='EMMAX_GWAS.status',
                              types=[dict])
         authurl = config.get(AUTH) if config else None
         self.auth_client = _KBaseAuth(authurl)
@@ -398,7 +398,7 @@ class Application(object):
                             err = JSONServerError()
                             err.data = (
                                 'Authentication required for ' +
-                                'GWASTool ' +
+                                'EMMAX_GWAS ' +
                                 'but no authentication header was passed')
                             raise err
                         elif token is None and auth_req == 'optional':

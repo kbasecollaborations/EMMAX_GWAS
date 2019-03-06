@@ -4,15 +4,13 @@ import time
 import unittest
 from configparser import ConfigParser
 
-from GWASTool.GWASToolImpl import GWASTool
-from GWASTool.GWASToolServer import MethodContext
-from GWASTool.authclient import KBaseAuth as _KBaseAuth
+from EMMAX_GWAS.EMMAX_GWASImpl import EMMAX_GWAS
+from EMMAX_GWAS.EMMAX_GWASServer import MethodContext
+from EMMAX_GWAS.authclient import KBaseAuth as _KBaseAuth
 
 from installed_clients.WorkspaceClient import Workspace
 
-
-class GWASToolTest(unittest.TestCase):
-
+class EMMAX_GWASTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         token = os.environ.get('KB_AUTH_TOKEN', None)
@@ -20,7 +18,7 @@ class GWASToolTest(unittest.TestCase):
         cls.cfg = {}
         config = ConfigParser()
         config.read(config_file)
-        for nameval in config.items('GWASTool'):
+        for nameval in config.items('EMMAX_GWAS'):
             cls.cfg[nameval[0]] = nameval[1]
         # Getting username from Auth profile for token
         authServiceUrl = cls.cfg['auth-service-url']
@@ -32,18 +30,18 @@ class GWASToolTest(unittest.TestCase):
         cls.ctx.update({'token': token,
                         'user_id': user_id,
                         'provenance': [
-                            {'service': 'GWASTool',
+                            {'service': 'EMMAX_GWAS',
                              'method': 'please_never_use_it_in_production',
                              'method_params': []
                              }],
                         'authenticated': 1})
         cls.wsURL = cls.cfg['workspace-url']
         cls.wsClient = Workspace(cls.wsURL)
-        cls.serviceImpl = GWASTool(cls.cfg)
+        cls.serviceImpl = EMMAX_GWAS(cls.cfg)
         cls.scratch = cls.cfg['scratch']
         cls.callback_url = os.environ['SDK_CALLBACK_URL']
         suffix = int(time.time() * 1000)
-        cls.wsName = "test_GWASTool" + str(suffix)
+        cls.wsName = "test_EMMAX_GWAS" + str(suffix)
         ret = cls.wsClient.create_workspace({'workspace': cls.wsName})  # noqa
 
     @classmethod
@@ -53,6 +51,10 @@ class GWASToolTest(unittest.TestCase):
             print('Test workspace was deleted')
 
     # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
+    """
+    While in development you can leave tests alone. Tests will only run automatically if the function name
+    starts with 'test_'.
+    
     def test_your_method(self):
         # Prepare test objects in workspace if needed using
         # self.getWsClient().save_objects({'workspace': self.getWsName(),
@@ -64,5 +66,8 @@ class GWASToolTest(unittest.TestCase):
         # Check returned data with
         # self.assertEqual(ret[...], ...) or other unittest methods
 
-        result = self.serviceImpl.plink_file_conversions(self.ctx, {'workspace_name': 'ntrobinson:narrative_1550787997102',
-                                                                 'variation': '25487/2/1'})
+        result = self.serviceImpl.run_emmax_association(self.ctx, {
+            'workspace_name': self.wsName,
+            
+        })
+    """

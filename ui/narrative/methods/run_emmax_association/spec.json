@@ -1,0 +1,88 @@
+{
+    "ver": "0.0.1",
+    "authors": [
+        "ntrobinson",
+        "cvschneider",
+        "rmr",
+        "pranjan"
+    ],
+    "contact": "",
+    "categories": ["active"],
+    "widgets": {
+        "input": "kbaseNarrativeMethodInput",
+        "output" : "no-display"
+    },
+    "parameters": [ 
+        {
+            "id": "Variation",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [ "KBaseGwasData.Variations" ]
+            }
+        },
+        {
+            "id": "Trait Matrix",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [ "KBaseMatrices.TraitMatrix" ]
+            }
+        },
+        {
+            "id": "assoc_obj_name",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types" : [ "KBaseGwasData.Associations" ],
+                "is_output_name" : true
+            }
+        }
+    ],
+    "behavior": {
+        "service-mapping": {
+            "url": "",
+            "name": "EMMAX_GWAS",
+            "method": "run_emmax_association",
+            "input_mapping": [
+                {
+                    "narrative_system_variable": "workspace",
+                    "target_property": "workspace_name"
+                },{
+                    "input_parameter": "Variation",
+                    "target_property": "variation",
+                     "target_type_transform": "resolved-ref"
+                },{
+                    "input_parameter": "Trait Matrix",
+                    "target_property": "trait_matrix",
+                    "target_type_transform": "resolved-ref"
+                },{
+                    "input_parameter": "assoc_obj_name",
+                    "target_property": "assoc_obj_name"
+                }
+            ],
+            "output_mapping": [
+                {
+                    "service_method_output_path": [0,"report_name"],
+                    "target_property": "report_name"
+                },{
+                    "service_method_output_path": [0,"report_ref"],
+                    "target_property": "report_ref"
+                },{
+                    "narrative_system_variable": "workspace",
+                    "target_property": "ws"
+                }
+            ]
+        }
+    },
+    "job_id_output_field": "docker"
+}

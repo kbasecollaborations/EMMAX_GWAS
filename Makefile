@@ -1,7 +1,7 @@
-SERVICE = gwastool
-SERVICE_CAPS = GWASTool
-SPEC_FILE = GWASTool.spec
-URL = https://kbase.us/services/gwastool
+SERVICE = emmax_gwas
+SERVICE_CAPS = EMMAX_GWAS
+SPEC_FILE = EMMAX_GWAS.spec
+URL = https://kbase.us/services/emmax_gwas
 DIR = $(shell pwd)
 LIB_DIR = lib
 SCRIPTS_DIR = scripts

@@ -1,5 +1,5 @@
 module-name:
-    GWASTool
+    EMMAX_GWAS
 
 module-description:
     A KBase module which performs GWAS analysis.

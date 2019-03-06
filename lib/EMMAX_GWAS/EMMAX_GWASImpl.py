@@ -86,6 +86,14 @@ class EMMAX_GWAS:
             After this minimal viable product is achieved we can transition to KBase objects
         """
 
+        # You can retreive the VCF file by:
+        variation_info = self.vu.get_variation_as_vcf({
+            'variation_ref': params['variation'],
+            # this is where the vcf will be saved to
+            # use config['scratch'] location for all file operations
+            'filename': os.path.join(self.config['scratch'], 'variation.vcf')
+        })
+
         #END run_emmax_association
 
         # At some point might do deeper type checking...

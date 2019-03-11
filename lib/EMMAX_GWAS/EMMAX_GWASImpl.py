@@ -8,6 +8,7 @@ from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.VariationUtilClient import VariationUtil
+from EMMAX_GWAS.Utils.AssociationUtils import AssociationUtils
 #END_HEADER
 
 
@@ -87,12 +88,23 @@ class EMMAX_GWAS:
         """
 
         # You can retreive the VCF file by:
+        """
+        
+        once we're ready to do KBase testing, use this
+        "get_variation_as_vcf" returns a file path and name
+        
         variation_info = self.vu.get_variation_as_vcf({
             'variation_ref': params['variation'],
             # this is where the vcf will be saved to
             # use config['scratch'] location for all file operations
             'filename': os.path.join(self.config['scratch'], 'variation.vcf')
         })
+        """
+
+        association_util = AssociationUtils(self.config, 'path')
+
+
+        output = {}
 
         #END run_emmax_association
 

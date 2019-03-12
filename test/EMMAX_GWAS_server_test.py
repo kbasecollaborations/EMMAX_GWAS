@@ -51,9 +51,9 @@ class EMMAX_GWASTest(unittest.TestCase):
             print('Test workspace was deleted')
 
     # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
-    """
-    While in development you can leave tests alone. Tests will only run automatically if the function name
-    starts with 'test_'.
+
+    # While in development you can leave tests alone. Tests will only run automatically if the function name
+    # starts with 'test_'.
     
     def test_your_method(self):
         # Prepare test objects in workspace if needed using
@@ -68,6 +68,4 @@ class EMMAX_GWASTest(unittest.TestCase):
 
         result = self.serviceImpl.run_emmax_association(self.ctx, {
             'workspace_name': self.wsName,
-            
-        })
-    """
+            'variation': ''})

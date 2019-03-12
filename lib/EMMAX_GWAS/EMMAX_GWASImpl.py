@@ -101,7 +101,13 @@ class EMMAX_GWAS:
         })
         """
 
-        association_util = AssociationUtils(self.config, 'path')
+        # files = {'/data/ped_file.ped', '/data/map_file.map', '/data/pheno_file.pheno'}
+        data_files = {'/data/'}
+
+        association_util = AssociationUtils(self.config, data_files)
+
+        assoc_file = associations.local_run_assoc(data_files)
+
 
 
         output = {}

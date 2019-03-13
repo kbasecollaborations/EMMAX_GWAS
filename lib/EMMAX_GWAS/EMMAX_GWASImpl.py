@@ -41,7 +41,7 @@ class EMMAX_GWAS:
         self.config = config
         self.config['SDK_CALLBACK_URL'] = os.environ['SDK_CALLBACK_URL']
         self.config['KB_AUTH_TOKEN'] = os.environ['KB_AUTH_TOKEN']
-        self.config['test_data_dir'] = os.path.abspath('/kb/testdata')
+        self.config['TEST_DATA_DIR'] = os.path.abspath('/kb/data')
         self.shared_folder = config['scratch']
         self.dfu = DataFileUtil(self.config['SDK_CALLBACK_URL'])
         self.vu = VariationUtil(self.config['SDK_CALLBACK_URL'])
@@ -101,16 +101,12 @@ class EMMAX_GWAS:
         })
         """
 
-        # files = {'/data/ped_file.ped', '/data/map_file.map', '/data/pheno_file.pheno'}
-        data_files = {'/data/'}
+        # data_files = {'/data/ped_file.ped', '/data/map_file.map', '/data/pheno_file.pheno'}
 
-        association_util = AssociationUtils(self.config, data_files)
+        association_util = AssociationUtils(self.config)
+        assoc_file = association_util.local_run_association()
 
-        assoc_file = associations.local_run_assoc(data_files)
-
-
-
-        output = {}
+        output = assoc_file
 
         #END run_emmax_association
 

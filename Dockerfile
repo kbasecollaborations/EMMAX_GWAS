@@ -45,6 +45,14 @@ RUN chmod -R a+rw /kb/module
 
 WORKDIR /kb/module
 
+ENV PATH=$PATH:/kb/module/deps
+
+RUN cd data \
+    && curl -J -L https://easygwas.ethz.ch/rest/phenotype/download/public/AT_P_43/ -o FLC.tsv \
+    && curl -J -L https://easygwas.ethz.ch/down/dataset/download/1/ -o AtPolyDB.zip \
+    && unzip AtPolyDB.zip \
+    && rm phenotypes.pheno
+
 RUN make all
 
 ENTRYPOINT [ "./scripts/entrypoint.sh" ]

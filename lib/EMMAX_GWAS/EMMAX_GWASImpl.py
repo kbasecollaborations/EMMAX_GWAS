@@ -51,8 +51,9 @@ class EMMAX_GWAS:
         #END_CONSTRUCTOR
         pass
 
-
     def run_emmax_association(self, ctx, params):
+        # we are in kb/module/test when this method is run in a server test
+
         """
         :param params: instance of type "GemmaGwasInput" -> structure:
            parameter "workspace_name" of String, parameter "assoc_obj_name"
@@ -106,16 +107,14 @@ class EMMAX_GWAS:
         association_util = AssociationUtils(self.config)
         assoc_file = association_util.local_run_association()
 
-        output = assoc_file
-
-        #END run_emmax_association
+        # END run_emmax_association
 
         # At some point might do deeper type checking...
-        if not isinstance(output, dict):
-            raise ValueError('Method run_emmax_association return value ' +
-                             'output is not type dict as required.')
+        # if not isinstance(output, dict):
+
         # return the results
-        return [output]
+        return [assoc_file]
+
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",

@@ -68,4 +68,4 @@ class EMMAX_GWASTest(unittest.TestCase):
 
         result = self.serviceImpl.run_emmax_association(self.ctx, {
             'workspace_name': self.wsName,
-            'variation': ''})
+            'variation': ' '})

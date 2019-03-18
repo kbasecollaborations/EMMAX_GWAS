@@ -17,19 +17,38 @@ class AssociationUtils:
         # univariate analysis?
 
         # prepare phenotype - set of physical characteristics associated with a trait (genotype has to do with DNA)
-        # phenotype file is given
+        # for the moment, we are curling these in the docker terminal
         pheno = {}
 
         # plink files generated for
-        plink = {}
+        plink = self.plink_method()
+        print(plink)
 
         # kinship matrix
         kinmatrix = {}
 
         # EMMAX association
+        # call create_newpheno to format phenotype file for EMMAX
         emmax = {}
 
-    def plink_files(self):
+    def plink_method(self):
+        plink_base_prefix = 'plink_variation'
+
+        plink_args = ['--file', 'genotype', '--output-missing-genotype', '0', '--recode', '12', 'transpose',
+                         '--pheno', 'FLC.tsv', '--output-missing-phenotype', 'NA', '--out', plink_base_prefix]
+        plink_cmd = ['plink']
+
+        for args in plink_args:
+            plink_cmd.append(args)
+
+        try:
+            proc = subprocess.Popen(plink_cmd, cwd='../data/')
+            proc.wait()
+
+        except Exception as e:
+            exit(e)
+
+        return {'output': '?PLACEHOLDER OUTPUT?'}
 
     def create_newpheno(self):
         # Chris Schneider's phenotype stuff, reformats pheno file to a format that EMMAX likes

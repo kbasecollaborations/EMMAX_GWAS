@@ -107,13 +107,18 @@ class EMMAX_GWAS:
         association_util = AssociationUtils(self.config)
         assoc_file = association_util.local_run_association()
 
-        # END run_emmax_association
+        output = {
+            'ws': params['workspace_name']
+        }
+
+        #END run_emmax_association
 
         # At some point might do deeper type checking...
-        # if not isinstance(output, dict):
-
+        if not isinstance(output, dict):
+            raise ValueError('Method run_gemma_association return value ' +
+                             'output is not type dict as required.')
         # return the results
-        return [assoc_file]
+        return [output]
 
     def status(self, ctx):
         #BEGIN_STATUS

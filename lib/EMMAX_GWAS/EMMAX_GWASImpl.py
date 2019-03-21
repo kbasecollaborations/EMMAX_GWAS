@@ -9,6 +9,7 @@ from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.VariationUtilClient import VariationUtil
 from EMMAX_GWAS.Utils.AssociationUtils import AssociationUtils
+from EMMAX_GWAS.Utils.GWASReportUtils import GWASReportUtils
 #END_HEADER
 
 
@@ -107,9 +108,10 @@ class EMMAX_GWAS:
         association_util = AssociationUtils(self.config)
         assoc_file = association_util.local_run_association()
 
-        output = {
-            'ws': params['workspace_name']
-        }
+        gwas_report_util = GWASReportUtils(self.config)
+        gwas_report_html = gwas_report_util.make_output(params, assoc_file)
+
+        output = gwas_report_html
 
         #END run_emmax_association
 

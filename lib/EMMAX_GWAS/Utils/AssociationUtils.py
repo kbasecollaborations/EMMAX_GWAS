@@ -36,6 +36,8 @@ class AssociationUtils:
         # call create_newpheno to format phenotype file for EMMAX
         self.emmax_method()
 
+        return 'emmax_assoc.ps'
+
     def kinship_method(self):
         emmax_kin_args = ['-v', '-d', '10', self.plink_base_prefix]
 

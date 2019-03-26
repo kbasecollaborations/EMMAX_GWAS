@@ -74,4 +74,5 @@ class EMMAX_GWASTest(unittest.TestCase):
         result = self.serviceImpl.run_emmax_association(self.ctx, {
             'workspace_name': 'ntrobinson:narrative_1553207305943',
             'variation': '26606/3/1',
-            'trait_matrix': '26606/2/1'})
+            'trait_matrix': '26606/2/1',
+            'assoc_obj_name': 'ASSOC_OBJ'})

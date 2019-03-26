@@ -8,6 +8,7 @@ from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.VariationUtilClient import VariationUtil
+from installed_clients.WorkspaceClient import Workspace
 from EMMAX_GWAS.Utils.AssociationUtils import AssociationUtils
 from EMMAX_GWAS.Utils.GWASReportUtils import GWASReportUtils
 #END_HEADER
@@ -90,6 +91,8 @@ class EMMAX_GWAS:
             raise ValueError('KBase variation object not set.')
         if 'trait_matrix' not in params:
             raise ValueError('KBase trait matrix object not set.')
+        if 'assoc_obj_name' not in params:
+            raise ValueError('Association object name not set.')
 
         variation_info = self.vu.get_variation_as_vcf({
             'variation_ref': params['variation'],

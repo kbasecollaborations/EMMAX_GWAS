@@ -43,9 +43,10 @@ class EMMAX_GWAS:
         self.config['SDK_CALLBACK_URL'] = os.environ['SDK_CALLBACK_URL']
         self.config['KB_AUTH_TOKEN'] = os.environ['KB_AUTH_TOKEN']
         self.config['TEST_DATA_DIR'] = os.path.abspath('/kb/data')
-        self.shared_folder = config['scratch']
+        # self.config['scratch'] is the tmp directory
         self.dfu = DataFileUtil(self.config['SDK_CALLBACK_URL'])
         self.vu = VariationUtil(self.config['SDK_CALLBACK_URL'])
+        self.wsc = Workspace("https://appdev.kbase.us/services/ws")
 
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
@@ -73,24 +74,6 @@ class EMMAX_GWAS:
         #BEGIN run_emmax_association
 
         """
-            Here is where the meat of your logic will go. 
-            I have created a few Utils classes in GEMMA_GWAS, and I would recommend doing it that way
-            I have a class for association test, input validations, and report generation
-            Your class calls and simple data validation can go here.
-            
-            For the time being use file local to the module for analysis and do not worry about Kbase objects
-            i.e.
-                file = '/path/to/local/file'
-                
-                emmax file
-                
-                *handle output*
-                
-            After this minimal viable product is achieved we can transition to KBase objects
-        """
-
-        # You can retreive the VCF file by:
-        """
         
         once we're ready to do KBase testing, use this
         "get_variation_as_vcf" returns a file path and name
@@ -103,10 +86,22 @@ class EMMAX_GWAS:
         })
         """
 
-        # data_files = {'/data/ped_file.ped', '/data/map_file.map', '/data/pheno_file.pheno'}
+        if 'variation' not in params:
+            raise ValueError('KBase variation object not set.')
+        if 'trait_matrix' not in params:
+            raise ValueError('KBase trait matrix object not set.')
 
-        association_util = AssociationUtils(self.config)
-        assoc_file = association_util.local_run_association()
+        variation_info = self.vu.get_variation_as_vcf({
+            'variation_ref': params['variation'],
+            'filename': os.path.join(self.config['scratch'], 'variation.vcf')
+        })
+
+        # use config['scratch'] location for all file operations
+        # this is where the vcf will be saved to
+
+        print('SUCCESS SUCCESS SUCCESS SUCCESS SUCCESS SUCCESS')
+        association_util = AssociationUtils(self.config, variation_info['path'], self.wsc)
+        assoc_file = association_util.kbase_run_association(params)
 
         gwas_report_util = GWASReportUtils(self.config)
         gwas_report_html = gwas_report_util.make_output(params, assoc_file)

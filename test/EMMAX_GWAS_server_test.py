@@ -55,7 +55,7 @@ class EMMAX_GWASTest(unittest.TestCase):
     # While in development you can leave tests alone. Tests will only run automatically if the function name
     # starts with 'test_'.
     
-    def test_your_method(self):
+    def local_test_your_method(self):
         # Prepare test objects in workspace if needed using
         # self.getWsClient().save_objects({'workspace': self.getWsName(),
         #                                  'objects': []})
@@ -69,3 +69,9 @@ class EMMAX_GWASTest(unittest.TestCase):
         result = self.serviceImpl.run_emmax_association(self.ctx, {
             'workspace_name': self.wsName,
             'variation': ' '})
+
+    def test_kbase_your_method(self):
+        result = self.serviceImpl.run_emmax_association(self.ctx, {
+            'workspace_name': 'ntrobinson:narrative_1553207305943',
+            'variation': '26606/3/1',
+            'trait_matrix': '26606/2/1'})

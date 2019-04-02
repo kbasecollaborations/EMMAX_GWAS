@@ -33,19 +33,19 @@ class GWASReportUtils:
         with contig lengths from the assembly file into a formated TSV
         '''
 
-
-
         assembly_obj = self.dfu.get_objects({'object_refs': ['26606/5/1']})['data'][0]
-        assembly_contigs = assembly_obj['data']['contigs']
-        contig_ids = list(assembly_contigs.keys())
+        contigs = assembly_obj['data']['contigs']
+        contig_ids = list(contigs.keys())
         contig_ids.sort()
 
         contig_baselengths = {}
         prev_len = 0
 
         for id in contig_ids:
-            contig_baselengths[id] = assembly_contigs[id]['length']
+            contig_baselengths[id] = contigs[id]['length']
         pp(contig_baselengths)
+
+        self.create_tsv()
 
         report_obj = {
             'message': 'reportmsg',
@@ -60,19 +60,36 @@ class GWASReportUtils:
 
         return report_obj
 
-    def make_html_report(self, assoc_results, variation_ref):
-        assoc_results = self.filter_assoc_results(trai)
+    def create_test_tsv(self):
+        tsv_filtered_headers = "SNP\tCHR\tBP\tP\tPOS\n"
 
-        return {}, {}
+        filtered_tsv_file = 'test_tsv.tsv'
 
-    def create_tsv(self):
-        ps_file = 'emmax_assoc.ps'
+        with open(filtered_tsv_file, 'w') as tsv_filtered:
+            tsv_filtered.write(tsv_filtered_headers)
+
+            tsv_filtered.write('Chr5_10172992' + "\t" + '5' + "\t" + '10172992' + "\t" + '3.355332e-11' + "\t"
+                               + '102343838' + "\n")
+            tsv_filtered.write('Chr1_6148689' + "\t" + '1' + "\t" + '6148689' + "\t" + '1.171374e-11' + "\t"
+                               + '6148689' + "\n")
+            tsv_filtered.write('Chr3_18592228' + "\t" + '3' + "\t" + '18592228' + "\t" + '1.927625e-08' + "\t"
+                               + '68718188' + "\n")
+            tsv_filtered.write('Chr1_1493521' + "\t" + '1' + "\t" + '1493521' + "\t" + '9.377403e-08' + "\t"
+                               + '1493521' + "\n")
+            tsv_filtered.write('Chr1_4128051' + "\t" + '1' + "\t" + '4128051' + "\t" + '1.846375e-07' + "\t"
+                               + '4128051' + "\n")
+
+            tsv_filtered.close()
+
+        with open(filtered_tsv_file, 'r') as tsv_filtered_opened:
+            print(tsv_filtered_opened.read())
+
+    def ps_to_tsv(self):
         output_file = 'pyoutput.tsv'
         assoc_entry_limit = 5000
         tsv_delim = '\t'
 
         inputps = []
-
         with open(ps_file, 'r', newline='\n') as delimfile:
             psreader = csv.reader(delimfile, delimiter='\t')
             for row in psreader:
@@ -80,9 +97,15 @@ class GWASReportUtils:
             delimfile.close()
 
         inputps.sort(key=lambda x: float(x[2]), reverse=False)
-        # sortedps = sorted(inputps, key=lambda x: x[2])
 
         with open(output_file, 'w') as newfile:
+            newfile.write("SNP\tCHR\tBP\tP\tPOS\n")
             for row in inputps:
-                newfile.write(row[0] + tsv_delim + row[1] + tsv_delim + row[2] + '\n')
+                # row[0] = Chr<CHR>_<BP>
+                # row[2] = <P>
+                BP = row[0][5:]
+                CHR = row[0][3]
+                P = row[2]
+                SNP = 's' + CHR + BP
+                newfile.write(SNP + tsv_delim + CHR + tsv_delim + BP + tsv_delim + P + '\n')
             newfile.close()

@@ -8,7 +8,6 @@ from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.VariationUtilClient import VariationUtil
-from installed_clients.WorkspaceClient import Workspace
 from EMMAX_GWAS.Utils.AssociationUtils import AssociationUtils
 from EMMAX_GWAS.Utils.GWASReportUtils import GWASReportUtils
 #END_HEADER
@@ -44,10 +43,9 @@ class EMMAX_GWAS:
         self.config['SDK_CALLBACK_URL'] = os.environ['SDK_CALLBACK_URL']
         self.config['KB_AUTH_TOKEN'] = os.environ['KB_AUTH_TOKEN']
         self.config['TEST_DATA_DIR'] = os.path.abspath('/kb/data')
-        # self.config['scratch'] is the tmp directory
+        self.shared_folder = config['scratch']
         self.dfu = DataFileUtil(self.config['SDK_CALLBACK_URL'])
         self.vu = VariationUtil(self.config['SDK_CALLBACK_URL'])
-        self.wsc = Workspace("https://appdev.kbase.us/services/ws")
 
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
@@ -74,37 +72,10 @@ class EMMAX_GWAS:
         # return variables are: output
         #BEGIN run_emmax_association
 
-        """
-        
-        once we're ready to do KBase testing, use this
-        "get_variation_as_vcf" returns a file path and name
-        
-        variation_info = self.vu.get_variation_as_vcf({
-            'variation_ref': params['variation'],
-            # this is where the vcf will be saved to
-            # use config['scratch'] location for all file operations
-            'filename': os.path.join(self.config['scratch'], 'variation.vcf')
-        })
-        """
+        # association_util = AssociationUtils(self.config)
+        # assoc_file = association_util.local_run_association()
 
-        if 'variation' not in params:
-            raise ValueError('KBase variation object not set.')
-        if 'trait_matrix' not in params:
-            raise ValueError('KBase trait matrix object not set.')
-        if 'assoc_obj_name' not in params:
-            raise ValueError('Association object name not set.')
-
-        variation_info = self.vu.get_variation_as_vcf({
-            'variation_ref': params['variation'],
-            'filename': os.path.join(self.config['scratch'], 'variation.vcf')
-        })
-
-        # use config['scratch'] location for all file operations
-        # this is where the vcf will be saved to
-
-        print('SUCCESS SUCCESS SUCCESS SUCCESS SUCCESS SUCCESS')
-        association_util = AssociationUtils(self.config, variation_info['path'], self.wsc)
-        assoc_file = association_util.kbase_run_association(params)
+        assoc_file = {}
 
         gwas_report_util = GWASReportUtils(self.config)
         gwas_report_html = gwas_report_util.make_output(params, assoc_file)

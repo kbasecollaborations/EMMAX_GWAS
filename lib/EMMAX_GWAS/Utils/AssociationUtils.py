@@ -10,30 +10,11 @@ from installed_clients.WorkspaceClient import Workspace
 
 
 class AssociationUtils:
-    def __init__(self, config, variation_path, workspace):
+    def __init__(self, config):
         self.dfu = DataFileUtil(config['SDK_CALLBACK_URL'])
-        self.wsc = workspace
-        self.scratch = config["scratch"]
-        self.process_var(variation_path)
+        self.datadir = config['TEST_DATA_DIR']
 
         self.plink_base_prefix = 'plink_variation'
-
-    def process_var(self, variation_path):
-        if not isinstance(files, (list,)):
-            # get extension from single file
-            file_name, file_ext = os.path.splitext(files)
-            if file_ext == '.vcf':
-                if os.path.exists(files):
-                    self.varfile = files
-                else:
-                    raise IOError('Variation file provided does not exist or is not readable.')
-            else:
-                raise ValueError('Only supporting VCF variation as input right now.')
-        else:
-            raise ValueError('Not accepting list of files as variation input yet!')
-
-    def kbase_run_association(self):
-        print('MADE IT TO KBASE_RUN_ASSOCIATION')
 
     def local_run_association(self):
         # univariate analysis?

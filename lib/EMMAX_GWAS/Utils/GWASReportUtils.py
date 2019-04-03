@@ -25,7 +25,7 @@ class GWASReportUtils:
         shutil.copytree('/kb/module/lib/EMMAX_GWAS/Utils/Report/mhplot/', os.path.join(self.scratch, 'mhplot'))
         self.htmldir = os.path.join(self.scratch, 'mhplot')
 
-    def make_output(self, params, assoc_results):
+    def make_output(self, params, ps_file):
         genome_ref = '26606/5/1'
 
         '''
@@ -45,7 +45,12 @@ class GWASReportUtils:
             contig_baselengths[id] = contigs[id]['length']
         pp(contig_baselengths)
 
-        self.create_tsv()
+        tsv_file = self.ps_to_tsv(ps_file)
+        # should now have a file called 'test_tsv.tsv'
+
+        # annotate gwas result file? snp to gene stuff
+
+        # look at line 260 in GEMMA_GWAS ReportUtils
 
         report_obj = {
             'message': 'reportmsg',
@@ -60,33 +65,9 @@ class GWASReportUtils:
 
         return report_obj
 
-    def create_test_tsv(self):
-        tsv_filtered_headers = "SNP\tCHR\tBP\tP\tPOS\n"
-
-        filtered_tsv_file = 'test_tsv.tsv'
-
-        with open(filtered_tsv_file, 'w') as tsv_filtered:
-            tsv_filtered.write(tsv_filtered_headers)
-
-            tsv_filtered.write('Chr5_10172992' + "\t" + '5' + "\t" + '10172992' + "\t" + '3.355332e-11' + "\t"
-                               + '102343838' + "\n")
-            tsv_filtered.write('Chr1_6148689' + "\t" + '1' + "\t" + '6148689' + "\t" + '1.171374e-11' + "\t"
-                               + '6148689' + "\n")
-            tsv_filtered.write('Chr3_18592228' + "\t" + '3' + "\t" + '18592228' + "\t" + '1.927625e-08' + "\t"
-                               + '68718188' + "\n")
-            tsv_filtered.write('Chr1_1493521' + "\t" + '1' + "\t" + '1493521' + "\t" + '9.377403e-08' + "\t"
-                               + '1493521' + "\n")
-            tsv_filtered.write('Chr1_4128051' + "\t" + '1' + "\t" + '4128051' + "\t" + '1.846375e-07' + "\t"
-                               + '4128051' + "\n")
-
-            tsv_filtered.close()
-
-        with open(filtered_tsv_file, 'r') as tsv_filtered_opened:
-            print(tsv_filtered_opened.read())
-
-    def ps_to_tsv(self):
-        output_file = 'pyoutput.tsv'
-        assoc_entry_limit = 5000
+    def ps_to_tsv(self, ps_file):
+        output_file = 'test_tsv.tsv'
+        # assoc_entry_limit = 5000
         tsv_delim = '\t'
 
         inputps = []
@@ -106,6 +87,32 @@ class GWASReportUtils:
                 BP = row[0][5:]
                 CHR = row[0][3]
                 P = row[2]
-                SNP = 's' + CHR + BP
+                SNP = 'Chr' + CHR + '_' + BP
                 newfile.write(SNP + tsv_delim + CHR + tsv_delim + BP + tsv_delim + P + '\n')
             newfile.close()
+        return output_file
+
+    def create_test_tsv(self):
+        tsv_headers = "SNP\tCHR\tBP\tP\tPOS\n"
+
+        tsv_file_name = "test_tsv.tsv"
+
+        with open(tsv_file_name, 'w') as tsv_file:
+            tsv_file.write(tsv_headers)
+
+            tsv_file.write('Chr5_10172992' + "\t" + '5' + "\t" + '10172992' + "\t" + '3.355332e-11' + "\t"
+                               + '102343838' + "\n")
+            tsv_file.write('Chr1_6148689' + "\t" + '1' + "\t" + '6148689' + "\t" + '1.171374e-11' + "\t"
+                               + '6148689' + "\n")
+            tsv_file.write('Chr3_18592228' + "\t" + '3' + "\t" + '18592228' + "\t" + '1.927625e-08' + "\t"
+                               + '68718188' + "\n")
+            tsv_file.write('Chr1_1493521' + "\t" + '1' + "\t" + '1493521' + "\t" + '9.377403e-08' + "\t"
+                               + '1493521' + "\n")
+            tsv_file.write('Chr1_4128051' + "\t" + '1' + "\t" + '4128051' + "\t" + '1.846375e-07' + "\t"
+                               + '4128051' + "\n")
+
+            tsv_file.close()
+
+        with open(tsv_file_name, 'r') as tsv_opened:
+            print(tsv_opened.read())
+        return tsv_file

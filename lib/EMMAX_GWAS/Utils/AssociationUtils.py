@@ -18,9 +18,6 @@ class AssociationUtils:
 
     def local_run_association(self):
         # univariate analysis?
-        os.chdir('../data')
-        subprocess.call('pwd')
-
         # plink files generated for
         self.plink_method()
 
@@ -28,7 +25,6 @@ class AssociationUtils:
         # for the moment, we are curling these in the docker terminal
         self.create_newpheno()
 
-        subprocess.call('ls')
         # kinship matrix
         self.kinship_method()
 

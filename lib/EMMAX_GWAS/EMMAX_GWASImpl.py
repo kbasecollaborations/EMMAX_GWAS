@@ -2,6 +2,7 @@
 #BEGIN_HEADER
 import logging
 import os
+import subprocess
 
 from installed_clients.KBaseReportClient import KBaseReport
 
@@ -72,13 +73,16 @@ class EMMAX_GWAS:
         # return variables are: output
         #BEGIN run_emmax_association
 
-        # association_util = AssociationUtils(self.config)
-        # assoc_file = association_util.local_run_association()
+        os.chdir('../data')
+        #subprocess.call('pwd')
 
-        assoc_file = {}
+        association_util = AssociationUtils(self.config)
+        assoc_file = association_util.local_run_association()
+        #subprocess.call('pwd')
 
         gwas_report_util = GWASReportUtils(self.config)
         gwas_report_html = gwas_report_util.make_output(params, assoc_file)
+        subprocess.call('pwd')
 
         output = gwas_report_html
 

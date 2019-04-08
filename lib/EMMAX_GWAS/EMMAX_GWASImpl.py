@@ -82,7 +82,7 @@ class EMMAX_GWAS:
 
         gwas_report_util = GWASReportUtils(self.config)
         gwas_report_html = gwas_report_util.make_output(params, assoc_file)
-        subprocess.call('pwd')
+        subprocess.call('ls')
 
         output = gwas_report_html
 

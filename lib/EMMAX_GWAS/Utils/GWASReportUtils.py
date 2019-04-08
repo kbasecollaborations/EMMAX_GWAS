@@ -4,6 +4,7 @@ import csv
 import shutil
 import logging
 import uuid
+import subprocess
 
 from pprint import pprint as pp
 
@@ -42,10 +43,12 @@ class GWASReportUtils:
         prev_len = 0
 
         for id in contig_ids:
-            contig_baselengths[id] = contigs[id]['length']
+            contig_baselengths[id] = prev_len
+            prev_len += contigs[id]['length']
+
         pp(contig_baselengths)
 
-        tsv_file = self.ps_to_tsv(ps_file)
+        tsv_file = self.ps_to_tsv(ps_file, contig_baselengths)
         # should now have a file called 'test_tsv.tsv'
 
         # annotate gwas result file? snp to gene stuff
@@ -65,7 +68,7 @@ class GWASReportUtils:
 
         return report_obj
 
-    def ps_to_tsv(self, ps_file):
+    def ps_to_tsv(self, ps_file, contig_baselengths):
         output_file = 'test_tsv.tsv'
         # assoc_entry_limit = 5000
         tsv_delim = '\t'
@@ -88,8 +91,15 @@ class GWASReportUtils:
                 CHR = row[0][3]
                 P = row[2]
                 SNP = 'Chr' + CHR + '_' + BP
-                newfile.write(SNP + tsv_delim + CHR + tsv_delim + BP + tsv_delim + P + '\n')
+                global_base = int(contig_baselengths[int(CHR)])
+
+                # previous contig's baselength + BP
+                POS = str(int(BP) + global_base)
+                newfile.write(SNP + tsv_delim + CHR + tsv_delim + BP + tsv_delim + P + tsv_delim + POS + '\n')
             newfile.close()
+
+        subprocess.call('cat', 'test_tsv.tsv')
+
         return output_file
 
     def create_test_tsv(self):

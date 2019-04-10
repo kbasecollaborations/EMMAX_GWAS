@@ -12,6 +12,7 @@ from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.snp2geneClient import snp2gene
 from installed_clients.WorkspaceClient import Workspace
 
+
 class GWASReportUtils:
     def __init__(self, config):
         self.config = config
@@ -50,12 +51,11 @@ class GWASReportUtils:
 
         pp(contig_baselengths)
 
-        tsv_file = self.ps_to_tsv(ps_file, contig_baselengths)
+        self.ps_to_tsv(ps_file, contig_baselengths)
         # should now have a file called 'test_tsv.tsv'
 
-        # annotate gwas result file? snp to gene stuff
-
-        # look at line 260 in GEMMA_GWAS ReportUtils
+        mhplot_args = ['python3', '-m', 'http.server']
+        subprocess.call(mhplot_args)
 
         report_obj = {
             'message': 'reportmsg',
@@ -100,6 +100,10 @@ class GWASReportUtils:
                 newfile.write(SNP + tsv_delim + CHR + tsv_delim + BP + tsv_delim + P + tsv_delim + POS + '\n')
             newfile.close()
 
+        with open('pheno.js', 'w') as f:
+            f.write("var inputs = ['" + output_file + "']")
+        f.close
+
         '''
         inputtsv = []
         with open(output_file, 'r', newline='\n') as tsv_done:
@@ -112,5 +116,3 @@ class GWASReportUtils:
         for row in inputtsv:
             print(row)
         '''
-
-        return output_file

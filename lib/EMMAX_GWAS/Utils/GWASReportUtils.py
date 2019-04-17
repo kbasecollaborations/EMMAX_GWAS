@@ -22,20 +22,16 @@ class GWASReportUtils:
         self.snp2gene = snp2gene(self.callback_url)
         #self.wsc = Workspace(config["ws_url"])
 
-        if os.path.isdir(os.path.join(self.scratch, 'mhplot')):
-            shutil.rmtree(os.path.join(self.scratch, 'mhplot'))
-        shutil.copytree('/kb/module/lib/EMMAX_GWAS/Utils/Report/mhplot/', os.path.join(self.scratch, 'mhplot'))
         self.htmldir = os.path.join(self.scratch, 'mhplot')
+        if os.path.isdir(self.htmldir):
+            shutil.rmtree(self.htmldir)
+        shutil.copytree('/kb/module/lib/EMMAX_GWAS/Utils/Report/mhplot/', self.htmldir)
+
 
     def make_output(self, params, ps_file):
-        genome_ref = '26606/5/1'
+        assembly_contigs = '26606/5/1'
 
-        '''
-        Our goal is to parse the .ps file resulting from EMMAX output and combining it
-        with contig lengths from the assembly file into a formated TSV
-        '''
-
-        assembly_obj = self.dfu.get_objects({'object_refs': ['26606/5/1']})['data'][0]
+        assembly_obj = self.dfu.get_objects({'object_refs': [assembly_contigs]})['data'][0]
         contigs = assembly_obj['data']['contigs']
         contig_ids = list(contigs.keys())
         contig_ids.sort()
@@ -47,15 +43,18 @@ class GWASReportUtils:
             contig_baselengths[id] = prev_len
             prev_len += contigs[id]['length']
 
-        print(contig_baselengths)
-
         pp(contig_baselengths)
 
         self.ps_to_tsv(ps_file, contig_baselengths)
-        # should now have a file called 'test_tsv.tsv'
 
+        # start a server
+        # use SNP2Gene?
+
+        '''
         mhplot_args = ['python3', '-m', 'http.server']
-        subprocess.call(mhplot_args)
+        # declare a port number? This is blocking our execution.
+        mhplot_thread = subprocess.call(mhplot_args)
+        '''
 
         report_obj = {
             'message': 'reportmsg',
@@ -71,7 +70,9 @@ class GWASReportUtils:
         return report_obj
 
     def ps_to_tsv(self, ps_file, contig_baselengths):
-        output_file = 'test_tsv.tsv'
+        tsv_file = 'generated_tsv.tsv'
+        js_file = 'pheno.js'
+
         # assoc_entry_limit = 5000
         tsv_delim = '\t'
 
@@ -84,9 +85,16 @@ class GWASReportUtils:
 
         inputps.sort(key=lambda x: float(x[2]), reverse=False)
 
-        with open(output_file, 'w') as newfile:
+        with open(tsv_file, 'w') as newfile:
             newfile.write("SNP\tCHR\tBP\tP\tPOS\n")
+            snps_added = 0
+
             for row in inputps:
+                snps_added = snps_added + 1
+
+                if snps_added == 5000:
+                    break
+
                 # row[0] = Chr<CHR>_<BP>
                 # row[2] = <P>
                 BP = row[0][5:]
@@ -100,19 +108,29 @@ class GWASReportUtils:
                 newfile.write(SNP + tsv_delim + CHR + tsv_delim + BP + tsv_delim + P + tsv_delim + POS + '\n')
             newfile.close()
 
-        with open('pheno.js', 'w') as f:
-            f.write("var inputs = ['" + output_file + "']")
+        with open(js_file, 'w') as f:
+            f.write("var inputs = ['" + tsv_file + "']")
         f.close
 
-        '''
+        # these move the specified files to the scratch directory
+        datadir = os.path.join(self.scratch, 'data')
+        if os.path.isdir(datadir):
+            shutil.rmtree(datadir)
+        shutil.copytree('/kb/module/data/', datadir)
+
+
+    def print_tsv(self):
         inputtsv = []
         with open(output_file, 'r', newline='\n') as tsv_done:
             tsvreader = csv.reader(tsv_done, delimiter='\t')
+            counter = 0
             for row in tsvreader:
                 inputtsv.append(row)
+                counter = counter + 1
+                if counter = 20:
+                    break
 
             tsv_done.close()
 
         for row in inputtsv:
             print(row)
-        '''

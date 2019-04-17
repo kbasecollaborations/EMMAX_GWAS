@@ -74,7 +74,7 @@ class EMMAX_GWAS:
         #BEGIN run_emmax_association
 
         os.chdir('../data')
-        #subprocess.call('pwd')
+        subprocess.call('pwd')
 
         association_util = AssociationUtils(self.config)
         assoc_file = association_util.local_run_association()

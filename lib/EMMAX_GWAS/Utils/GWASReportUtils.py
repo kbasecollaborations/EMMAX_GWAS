@@ -35,6 +35,7 @@ class GWASReportUtils:
         contigs = assembly_obj['data']['contigs']
         contig_ids = list(contigs.keys())
         contig_ids.sort()
+        genome_ref = assembly_obj['data']['genome_ref']
 
         contig_baselengths = {}
         prev_len = 0
@@ -47,14 +48,11 @@ class GWASReportUtils:
 
         self.ps_to_tsv(ps_file, contig_baselengths)
 
-        # start a server
-        # use SNP2Gene?
-
-        '''
-        mhplot_args = ['python3', '-m', 'http.server']
-        # declare a port number? This is blocking our execution.
-        mhplot_thread = subprocess.call(mhplot_args)
-        '''
+        #self.start_mhplot()
+        self.snp2gene.annotate_gwas_results({
+            'genome_obj': genome_ref,
+            'gwas_result_file': 'filtered_tsv.tsv'
+        })
 
         report_obj = {
             'message': 'reportmsg',
@@ -70,10 +68,14 @@ class GWASReportUtils:
         return report_obj
 
     def ps_to_tsv(self, ps_file, contig_baselengths):
-        tsv_file = 'generated_tsv.tsv'
+        '''
+        This method attempts to create a .TSV file as input for mhplot using both the PS file
+        generated from EMMAX output and the contig lengths acquired from KBase
+        :param ps_file, contig_baselengths:
+        '''
+        tsv_file = 'filtered_tsv.tsv'
         js_file = 'pheno.js'
 
-        # assoc_entry_limit = 5000
         tsv_delim = '\t'
 
         inputps = []
@@ -94,6 +96,7 @@ class GWASReportUtils:
 
                 if snps_added == 5000:
                     break
+                # assoc_entry_limit = 5000, done to remove least significant data
 
                 # row[0] = Chr<CHR>_<BP>
                 # row[2] = <P>
@@ -112,12 +115,19 @@ class GWASReportUtils:
             f.write("var inputs = ['" + tsv_file + "']")
         f.close
 
-        # these move the specified files to the scratch directory
+        # this moves the files in the data folder to the scratch directory for use in testing
         datadir = os.path.join(self.scratch, 'data')
         if os.path.isdir(datadir):
             shutil.rmtree(datadir)
         shutil.copytree('/kb/module/data/', datadir)
 
+    '''
+    def start_mhplot(self):
+        # start a server
+        mhplot_args = ['python3', '-m', 'http.server']
+        # declare a port number? This is blocking our execution.
+        mhplot_thread = subprocess.call(mhplot_args)
+    '''
 
     def print_tsv(self):
         inputtsv = []
@@ -127,7 +137,7 @@ class GWASReportUtils:
             for row in tsvreader:
                 inputtsv.append(row)
                 counter = counter + 1
-                if counter = 20:
+                if counter == 20:
                     break
 
             tsv_done.close()

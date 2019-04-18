@@ -43,7 +43,6 @@ class EMMAX_GWAS:
         self.config = config
         self.config['SDK_CALLBACK_URL'] = os.environ['SDK_CALLBACK_URL']
         self.config['KB_AUTH_TOKEN'] = os.environ['KB_AUTH_TOKEN']
-        self.config['TEST_DATA_DIR'] = os.path.abspath('/kb/data')
         self.shared_folder = config['scratch']
         self.dfu = DataFileUtil(self.config['SDK_CALLBACK_URL'])
         self.vu = VariationUtil(self.config['SDK_CALLBACK_URL'])
@@ -73,18 +72,46 @@ class EMMAX_GWAS:
         # return variables are: output
         #BEGIN run_emmax_association
 
+        if 'variation' not in params:
+            raise ValueError('Variation KBase reference not set.')
+        if 'trait_matrix' not in params:
+            raise ValueError('Trait matrix KBase reference not set.')
+        if 'assoc_obj_name' not in params:
+            raise ValueError('Association object name not given.')
+
+        logging.info("Downloading variation data from shock.")
+        variations = VariationUtil(self.config['SDK_CALLBACK_URL'])
+        variation_info = variations.get_variation_as_vcf({
+            'variation_ref': params['variation'],
+            'filename': os.path.join(self.config['scratch'], 'variation.vcf')
+        })
+        # downloads into /kb/module/work/tmp/variation.vcf
+
         os.chdir('../data')
         subprocess.call('pwd')
 
-        association_util = AssociationUtils(self.config)
+        logging.info("Performing association...")
+        association_util = AssociationUtils(self.config, variation_info['path'])
         assoc_file = association_util.local_run_association()
         #subprocess.call('pwd')
 
+        logging.info("Formatting output...")
         gwas_report_util = GWASReportUtils(self.config)
-        gwas_report_html = gwas_report_util.make_output(params, assoc_file)
+        gwas_report = gwas_report_util.make_output(params, assoc_file)
         subprocess.call('ls')
 
-        output = gwas_report_html
+        # Send report
+        # report_client = KBaseReport(self.config['SDK_CALLBACK_URL'])
+        # report = report_client.create_extended_report(report_obj)
+
+        #output = {
+        #   'report_name': report['name'],
+        #   'report_ref': report['ref'],
+        #   'ws': params['workspace_name']
+        #}
+
+        # gwas_report variable currently contains nonsense
+        output = gwas_report
 
         #END run_emmax_association
 

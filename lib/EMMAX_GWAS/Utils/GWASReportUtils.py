@@ -18,6 +18,7 @@ class GWASReportUtils:
         self.config = config
         self.scratch = config["scratch"]
         self.callback_url = config["SDK_CALLBACK_URL"]
+        # DataFileUtil necessary reference to contig object from KBase
         self.dfu = DataFileUtil(self.callback_url)
         self.snp2gene = snp2gene(self.callback_url)
         #self.wsc = Workspace(config["ws_url"])
@@ -26,7 +27,6 @@ class GWASReportUtils:
         if os.path.isdir(self.htmldir):
             shutil.rmtree(self.htmldir)
         shutil.copytree('/kb/module/lib/EMMAX_GWAS/Utils/Report/mhplot/', self.htmldir)
-
 
     def make_output(self, params, ps_file):
         assembly_contigs = '26606/5/1'
@@ -48,13 +48,11 @@ class GWASReportUtils:
 
         self.ps_to_tsv(ps_file, contig_baselengths)
 
-        '''
-        self.start_mhplot()
+        #self.start_mhplot()
         self.snp2gene.annotate_gwas_results({
             'genome_obj': genome_ref,
             'gwas_result_file': 'filtered_tsv.tsv'
         })
-        '''
 
         report_obj = {
             'message': 'reportmsg',
@@ -75,20 +73,23 @@ class GWASReportUtils:
         generated from EMMAX output and the contig lengths acquired from KBase
         :param ps_file, contig_baselengths:
         '''
-        tsv_file = 'filtered_tsv.tsv'
-        js_file = 'pheno.js'
+        tsv_file = 'filtered_tsv.tsv'  # This file name is arbitrary, it can be changed
+        js_file = 'pheno.js'  # The name "pheno.js" is required by mhplot, do not change this
 
         tsv_delim = '\t'
 
+        # Declare and populate EMMAX ps file output to an array
         inputps = []
         with open(ps_file, 'r', newline='\n') as delimfile:
             psreader = csv.reader(delimfile, delimiter='\t')
             for row in psreader:
                 inputps.append(row)
             delimfile.close()
-
+        # Sort the array in ascending order by p value
+        # This will sort the SNPs to be listed from most significant to least significant
         inputps.sort(key=lambda x: float(x[2]), reverse=False)
 
+        # Create the tsv to be referenced by pheno.js
         with open(tsv_file, 'w') as newfile:
             newfile.write("SNP\tCHR\tBP\tP\tPOS\n")
             snps_added = 0
@@ -113,6 +114,7 @@ class GWASReportUtils:
                 newfile.write(SNP + tsv_delim + CHR + tsv_delim + BP + tsv_delim + P + tsv_delim + POS + '\n')
             newfile.close()
 
+        # Reference the tsv in pheno.js for mhplot
         with open(js_file, 'w') as f:
             f.write("var inputs = ['" + tsv_file + "']")
         f.close
@@ -132,6 +134,7 @@ class GWASReportUtils:
     '''
 
     def print_tsv(self):
+    # Testing function, print contents of tsv referenced by pheno.js
         inputtsv = []
         with open(output_file, 'r', newline='\n') as tsv_done:
             tsvreader = csv.reader(tsv_done, delimiter='\t')

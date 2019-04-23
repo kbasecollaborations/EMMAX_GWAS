@@ -48,11 +48,13 @@ class GWASReportUtils:
 
         self.ps_to_tsv(ps_file, contig_baselengths)
 
-        #self.start_mhplot()
+        '''
+        self.start_mhplot()
         self.snp2gene.annotate_gwas_results({
             'genome_obj': genome_ref,
             'gwas_result_file': 'filtered_tsv.tsv'
         })
+        '''
 
         report_obj = {
             'message': 'reportmsg',

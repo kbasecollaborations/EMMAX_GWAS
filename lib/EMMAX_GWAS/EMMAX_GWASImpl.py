@@ -86,33 +86,33 @@ class EMMAX_GWAS:
             'filename': os.path.join(self.config['scratch'], 'variation.vcf')
         })
         # downloads into /kb/module/work/tmp/variation.vcf
-
-        os.chdir('../data')
-        subprocess.call('pwd')
+        # subprocess.call('pwd')
 
         logging.info("Performing association...")
         association_util = AssociationUtils(self.config, variation_info['path'])
         assoc_file = association_util.local_run_association()
-        #subprocess.call('pwd')
 
-        logging.info("Formatting output...")
-        gwas_report_util = GWASReportUtils(self.config)
-        gwas_report = gwas_report_util.make_output(params, assoc_file)
-        subprocess.call('ls')
+        output = {}
 
-        # Send report
-        # report_client = KBaseReport(self.config['SDK_CALLBACK_URL'])
-        # report = report_client.create_extended_report(report_obj)
+        # check to see if association was successful before calling ReportUtils
+        if association_util.success() == 1:
+            logging.info("Formatting output...")
+            gwas_report_util = GWASReportUtils(self.config)
+            gwas_report = gwas_report_util.make_output(params, assoc_file)
+            output = gwas_report
 
-        #output = {
-        #   'report_name': report['name'],
-        #   'report_ref': report['ref'],
-        #   'ws': params['workspace_name']
-        #}
+        '''
+        Report functionality is not yet ready, but will look something like this,
+        
+        report_client = KBaseReport(self.config['SDK_CALLBACK_URL'])
+        report = report_client.create_extended_report(report_obj)
 
-        # gwas_report variable currently contains nonsense
-        output = gwas_report
-
+        output = {
+           'report_name': report['name'],
+           'report_ref': report['ref'],
+           'ws': params['workspace_name']
+        }
+        '''
         #END run_emmax_association
 
         # At some point might do deeper type checking...

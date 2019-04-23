@@ -10,31 +10,27 @@ from installed_clients.WorkspaceClient import Workspace
 
 
 class AssociationUtils:
-    def __init__(self, config):
+    def __init__(self, config, variation_path):
         self.dfu = DataFileUtil(config['SDK_CALLBACK_URL'])
-        self.datadir = config['TEST_DATA_DIR']
 
+        # variable used as the prefix for most files used here
         self.plink_base_prefix = 'plink_variation'
 
-    def local_run_association(self):
-        # univariate analysis?
-        # plink files generated for
+        # 0 while association is unsuccessful, 1 when completed successfully
+        self.success = 0
+
+    def run_association(self):
+        # calls all class methods needed to perform EMMAX GWAS association.
         self.plink_method()
-
-        # prepare phenotype - set of physical characteristics associated with a trait (genotype has to do with DNA)
-        # for the moment, we are curling these in the docker terminal
         self.create_newpheno()
-
-        # kinship matrix
         self.kinship_method()
-
-        # EMMAX association
-        # call create_newpheno to format phenotype file for EMMAX
         self.emmax_method()
 
+        self.success = 1
         return 'emmax_assoc.ps'
 
     def kinship_method(self):
+        # prepares the kinship matrix using emmax-kin
         emmax_kin_args = ['-v', '-d', '10', self.plink_base_prefix]
 
         emmax_kin_cmd = ['emmax-kin']
@@ -50,6 +46,7 @@ class AssociationUtils:
             exit(e)
 
     def emmax_method(self):
+        # performs EMMAX association using an EMMAX command
         emmax_args = ['-v', '-d', '10', '-t', self.plink_base_prefix, '-p', 'newpheno', '-k',
                       self.plink_base_prefix + '.BN.kinf', '-o', 'emmax_assoc']
 
@@ -66,9 +63,20 @@ class AssociationUtils:
             exit(e)
 
     def plink_method(self):
+        # produces .TPED and .TFAM files using Plink commands
+        '''
+        Currently testing commands to process a VCF
+
+        Replace both of the commands below with this one if doing local testing. (no VCF,
+        using the curl commands in the Dockerfile)
+
         plink_args = ['--file', 'genotype', '--output-missing-genotype', '0', '--recode', '12', 'transpose',
                       '--pheno', 'FLC.tsv', '--output-missing-phenotype', 'NA', '--allow-no-sex',
                       '--allow-extra-chr', '--out', self.plink_base_prefix]
+        plink_cmd = ['plink']
+        '''
+
+        plink_args = ['--vcf', 'variation.vcf', '--out', self.plink_base_prefix]
         plink_cmd = ['plink']
 
         for args in plink_args:
@@ -80,9 +88,21 @@ class AssociationUtils:
         except Exception as e:
             exit(e)
 
+        plink_args_2 = ['--bfile', self.plink_base_prefix, '--recode12',
+                      '--output-missing-genotype', 0, '--transpose', '--out', self.plink_base_prefix]
+        plink_cmd_2 = ['plink']
+
+        for args in plink_args_2:
+            plink_cmd_2.append(args)
+        try:
+            proc = subprocess.Popen(plink_cmd_2)
+            proc.wait()
+
+        except Exception as e:
+            exit(e)
+
     def create_newpheno(self):
-        # Chris Schneider's phenotype stuff, reformats pheno file to a format that EMMAX likes
-        # ex. input: 'test_tped.tfam'
+        # reformats pheno file to a format that EMMAX likes
         inputphenos = []
         with open('plink_variation.tfam', 'r', newline='\n') as delimfile:
             phenoreader = csv.reader(delimfile, delimiter=' ')
@@ -93,3 +113,6 @@ class AssociationUtils:
             for pheno in inputphenos:
                 newfile.write(pheno[0] + ' ' + pheno[1] + ' ' + pheno[5] + '\n')
             newfile.close()
+
+    def success(self):
+        return self.success

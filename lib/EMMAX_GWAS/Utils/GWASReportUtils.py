@@ -61,7 +61,7 @@ class GWASReportUtils:
             'objects_created': 'some kind of list',
             'direct_html': None,
             'direct_html_link_index': 0,
-            'html_links': 'html_info',
+            'html_links': self.htmldir,
             'file_links': 'file_links',
             'report_object_name': 'EMMAX_GWAS_report_',
             'workspace_name': params['workspace_name']
